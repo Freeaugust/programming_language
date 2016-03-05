@@ -1,4 +1,5 @@
 module Show(
+	eval_ia,
 	eval_a,
 	eval_e,
 	eval_b,
@@ -8,14 +9,19 @@ module Show(
 
 import Moduling
 
+eval_ia :: In_att->String
+eval_ia (Url link) = link
+eval_ia (Inp inp) = inp
+eval_ia (Detail detail) = detail
+
 eval_a :: Attribute->String
 eval_a Empty_a = ""
-eval_a (Alt x) = x
-eval_a (Disable (Inp x)) = x
-eval_a (Href (Url link)) = "href=\""++link
-eval_a (Id x) = x
-eval_a (Src (Url link)) = link
-eval_a (Style x) = x
+eval_a (Alt x) = eval_ia x
+eval_a (Disable x) = eval_ia x
+eval_a (Href link) = "href=\""++(eval_ia link)
+eval_a (Id x) = eval_ia x
+eval_a (Src link) = eval_ia link
+eval_a (Style x) = eval_ia x
 eval_a (Cmb_a att1 att2) = let first = eval_a att1 in
 						   let second = eval_a att2 in
 						   first++"  "++second
@@ -34,7 +40,7 @@ eval_e (H level content) = let num = show level in
 eval_e (Cmb_e e1 e2) = let first = eval_e e1 in
 					   let second = eval_e e2 in
 					   first++"\n"++second
-eval_e (Link (Url x)) = x
+--eval_e (Link (Url x)) = x
 
 eval_b :: Basc->String
 eval_b (Title x) = "<title>"++x++"</title>"

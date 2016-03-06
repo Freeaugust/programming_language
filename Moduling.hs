@@ -24,6 +24,8 @@ module Moduling (
 	add_Basc
   )where
 
+import Php_moduling
+
 data Level = Level Int deriving(Show, Read, Eq)
 data In_att = Url String
 			| Inp String

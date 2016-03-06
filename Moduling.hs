@@ -9,6 +9,7 @@ module Moduling (
 	Root(Html),
 	make_Att,
 	make_Html,
+	make_Head,
 	make_Basc,
 	make_Elem,
 	make_Url,
@@ -16,6 +17,7 @@ module Moduling (
 	make_Detail,
 	make_Level_h,
 	make_Level,
+	cmb_Att,
 	cmb_Elem,
 	div_Elem,
 	add_Elem,
@@ -61,12 +63,15 @@ make_Att type_name s = if type_name=="alt" then Alt s
 					   else if type_name=="style" then Style s
 					   else Empty_a
 
-make_Html :: String->Root
-make_Html name = Html (Head name) Empty_b
+make_Html :: Head->Basc->Root
+make_Html head content = Html head content
 
-make_Basc :: String->String->Basc
-make_Basc type_name content = if type_name=="title" then Title content 
-							  else if type_name=="body" then Body content Empty_e
+make_Head :: String->Head
+make_Head title = Head title
+
+make_Basc :: String->String->Elem->Basc
+make_Basc type_name content elem = if type_name=="title" then Title content
+							  else if type_name=="body" then Body content elem
 							  else Empty_b
 
 make_Elem :: String->Attribute->String->Elem
@@ -91,6 +96,9 @@ make_Level :: Int->Int
 make_Level x = if x>6 then 6
 			   else if x<1 then 1
 			   else x
+
+cmb_Att :: Attribute->Attribute->Attribute
+cmb_Att att_1 att_2 = Cmb_a att_1 att_2
 
 cmb_Elem :: Elem->Elem->Elem
 cmb_Elem x y = Cmb_e x y

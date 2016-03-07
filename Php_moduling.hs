@@ -2,7 +2,7 @@
 module Php_moduling(
 	Php(P_Int, P_String, P_Float, P_Bool, P_Error),
 	Php_Rule(Add, Subs, Mul, Divi, Smal, Big, Equ),
-	Php_Function(Only, Apply, If_Judge),
+	Php_Function(Only, Apply, If_Judge, Echo),
 	eval_Php_Rule,
 	eval_Php_Function
   )where
@@ -23,6 +23,7 @@ data Php_Rule = Add  Php
 data Php_Function = Only Php
 				  | Apply Php_Rule Php_Function
 				  | If_Judge Php Php_Function Php_Function
+				  | Echo Php
 				  deriving(Show, Read, Eq)
 
 eval_Php_Rule :: Php_Rule->Php->Php
@@ -71,24 +72,4 @@ eval_Php_Function (Only x) = x
 eval_Php_Function (Apply x y) = eval_Php_Rule x (eval_Php_Function y)
 eval_Php_Function (If_Judge (P_Bool x) y z) = if x then eval_Php_Function y
 											  else eval_Php_Function z
-
---test data
-x = P_Int 10
-y = P_Int 1
-z = P_Int 1
-true = P_Bool True
-false = P_Bool False
-test_if_1 = If_Judge true (Only x) (Only y)
-test_if_2 = If_Judge false (Only x) (Only y)
-
-
-
-main = do
-	   let m = eval(Given y) x
-	   print x
-	   --do
-	   --print "234"
-	   --print "123"
-	   --let m = eval_Php_Rule (Given x) y
-	   --print m
-	   --print x
+eval_Php_Function (Echo x) = x

@@ -8,6 +8,7 @@ module Show(
   )where
 
 import Moduling
+import Php_moduling
 
 eval_ia :: In_att->String
 eval_ia (Url link) = link
@@ -20,8 +21,9 @@ eval_a (Alt x) = "alt=\""++(eval_ia x)++"\""
 eval_a (Disable x) = (eval_ia x)++"disable"
 eval_a (Href link) = " href=\""++(eval_ia link)
 eval_a (Id x) = " id "++(eval_ia x)
-eval_a (Src link) = " src=\""++(eval_ia link)++"\""
+eval_a (Src link) = " src=\""++show(eval_ia link)++"\""
 eval_a (Style x) = " style=\""++(eval_ia x)++"\""
+eval_a (Php_att x) = "<?php\n"++show(eval_Php_Function x)++"\n?>"
 eval_a (Cmb_a att1 att2) = let first = eval_a att1 in
 						   let second = eval_a att2 in
 						   first++"  "++second
@@ -29,6 +31,7 @@ eval_a (Cmb_a att1 att2) = let first = eval_a att1 in
 eval_e :: Elem->String
 eval_e (A x y) = "<a"++(eval_a x)++">"++y++"</a>"
 eval_e (P x) = "<p>"++x++"</p>"
+eval_e (Php_ele x) = "<?php\n"++show(eval_Php_Function x)++"\n?>"
 eval_e (Div x y z) = let first = eval_e y in
 				     let second = eval_e z in 
 				     let att = eval_a x in
@@ -45,7 +48,8 @@ eval_e (Cmb_e e1 e2) = let first = eval_e e1 in
 eval_b :: Basc->String
 eval_b (Title x) = "<title>\n"++x++"\n</title>\n"
 eval_b (Body x e) = let next = eval_e e in
-					"<body>\n"++next++"</body>\n"
+					"<body>\n"++next++"</body>"
+eval_b (Php_basc x) = "<?php\n"++show(eval_Php_Function x)++"\n?>"
 eval_b Empty_b = ""
 eval_b (Cmb_b b1 b2) = let first = eval_b b1 in
 					 let second = eval_b b2 in

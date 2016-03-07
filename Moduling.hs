@@ -2,9 +2,9 @@
 module Moduling (
 	Level(Level),
 	In_att(Url, Inp, Detail),
-	Attribute(Empty_a, Alt, Disable, Href, Id, Src, Style, Cmb_a),
-	Elem(A, P, Div, Empty_e, Img, H, Cmb_e),
-	Basc(Title, Body, Empty_b, Cmb_b),
+	Attribute(Empty_a, Alt, Disable, Href, Id, Src, Style, Php_att, Cmb_a),
+	Elem(A, P, Div, Empty_e, Img, H, Php_ele, Cmb_e),
+	Basc(Title, Body, Empty_b, Php_basc, Cmb_b),
 	Head(Head),
 	Root(Html),
 	make_Att,
@@ -21,7 +21,10 @@ module Moduling (
 	cmb_Elem,
 	div_Elem,
 	add_Elem,
-	add_Basc
+	add_Basc,
+	add_php_att,
+	add_php_ele,
+	add_php_basc
   )where
 
 import Php_moduling
@@ -38,6 +41,7 @@ data Attribute = Empty_a
 			   | Id In_att
 			   | Src In_att
 			   | Style In_att
+			   | Php_att Php_Function
 			   | Cmb_a Attribute Attribute 
 			   deriving(Show, Read, Eq)
 data Elem = A Attribute String
@@ -46,11 +50,13 @@ data Elem = A Attribute String
 		  | Empty_e
 		  | Img Attribute
 		  | H Level String
+		  | Php_ele Php_Function
 		  | Cmb_e Elem Elem
 		  deriving(Show, Read, Eq)
 data Basc = Title String
 		  | Body String Elem
 		  | Empty_b
+		  | Php_basc Php_Function
 		  | Cmb_b Basc Basc
 		  deriving(Show, Read, Eq)
 data Head = Head String deriving(Show, Read, Eq)
@@ -114,9 +120,14 @@ add_Elem (Body content e1) e2 = Body content (cmb_Elem e1 e2)
 add_Basc :: Head->Basc->Root
 add_Basc h b = Html h b
 
+add_php_att :: Attribute->Attribute->Attribute
+add_php_att att_1 (Php_att php) = Cmb_a att_1 (Php_att php)
 
+add_php_ele :: Elem->Elem->Elem
+add_php_ele ele_1 (Php_ele php) = Cmb_e ele_1 (Php_ele php)
 
-
+add_php_basc :: Basc->Basc->Basc
+add_php_basc basc_1 (Php_basc php) = Cmb_b basc_1 (Php_basc php)
 
 
 

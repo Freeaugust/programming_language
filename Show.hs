@@ -48,6 +48,7 @@ eval_b (Body x e) = let next = eval_e e in
 					"<body>\n"++next++"</body>"
 eval_b (Php_basc x) = "<?php\n"++show(eval_Php_Function x)++"\n?>"
 eval_b Empty_b = ""
+--map concat to each bascs
 eval_b (Bascs bascs) = concat (map (++ " ") (map eval_b bascs))
 
 eval_h :: Head->String

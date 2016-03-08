@@ -106,18 +106,21 @@ make_Level x = if x>6 then 6
 			   else x
 
 cmb_Att :: Attribute->Attribute->Attribute
+--Dealing with a list of Attributes
 cmb_Att (Attrs att_1) (Attrs att_2 )= Attrs (att_1 ++ att_2)
 cmb_Att (Attrs att_1) x = Attrs (att_1 ++ [x])
 cmb_Att x (Attrs att_2) = Attrs (x : att_2)
 cmb_Att x_1 x_2 = Attrs [x_1,x_2]
 
 cmb_Elem :: Elem->Elem->Elem
+--Dealing with a list of Elems
 cmb_Elem (Elems att_1) (Elems att_2 )= Elems (att_1 ++ att_2)
 cmb_Elem (Elems att_1) x = Elems (att_1 ++ [x])
 cmb_Elem x (Elems att_2) = Elems (x : att_2)
 cmb_Elem x_1 x_2 = Elems [x_1,x_2]
 
 cmb_Basc :: Basc->Basc->Basc
+--Dealing with a list of Bascs2
 cmb_Basc (Bascs att_1) (Bascs att_2 )= Bascs (att_1 ++ att_2)
 cmb_Basc (Bascs att_1) x = Bascs (att_1 ++ [x])
 cmb_Basc x (Bascs att_2) = Bascs (x : att_2)

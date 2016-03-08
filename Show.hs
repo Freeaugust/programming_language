@@ -24,10 +24,8 @@ eval_a (Id x) = " id "++(eval_ia x)
 eval_a (Src link) = " src=\""++show(eval_ia link)++"\""
 eval_a (Style x) = " style=\""++(eval_ia x)++"\""
 eval_a (Php_att x) = "<?php\n"++show(eval_Php_Function x)++"\n?>"
-eval_a (Cmb_a att1 att2) = let first = eval_a att1 in
-						   let second = eval_a att2 in
-						   first++"  "++second
-
+--map concat to each attributes
+eval_a (Attrs attrs) = concat (map (++ " ") (map eval_a attrs))
 eval_e :: Elem->String
 eval_e (A x y) = "<a"++(eval_a x)++">"++y++"</a>"
 eval_e (P x) = "<p>"++x++"</p>"
@@ -40,9 +38,8 @@ eval_e Empty_e = ""
 eval_e (Img att) = "<img  "++(eval_a att)++"/>\n"
 eval_e (H level content) = let num = show level in
 						   "<h"++num++">\n"++content++"</"++num++"h>\n"
-eval_e (Cmb_e e1 e2) = let first = eval_e e1 in
-					   let second = eval_e e2 in
-					   first++second
+--map concat to each elems
+eval_e (Elems elems ) = concat (map (++ " ") (map eval_e elems))
 --eval_e (Link (Url x)) = x
 
 eval_b :: Basc->String
@@ -51,9 +48,7 @@ eval_b (Body x e) = let next = eval_e e in
 					"<body>\n"++next++"</body>"
 eval_b (Php_basc x) = "<?php\n"++show(eval_Php_Function x)++"\n?>"
 eval_b Empty_b = ""
-eval_b (Cmb_b b1 b2) = let first = eval_b b1 in
-					 let second = eval_b b2 in
-					 first++"\n"++second
+eval_b (Bascs bascs) = concat (map (++ " ") (map eval_b bascs))
 
 eval_h :: Head->String
 eval_h (Head x) = "<head>\n"++x++"\n</head>\n"

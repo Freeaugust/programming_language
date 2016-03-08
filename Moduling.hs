@@ -2,9 +2,9 @@
 module Moduling (
 	Level(Level),
 	In_att(Url, Inp, Detail),
-	Attribute(Empty_a, Alt, Disable, Href, Id, Src, Style, Php_att, Cmb_a),
-	Elem(A, P, Div, Empty_e, Img, H, Php_ele, Cmb_e),
-	Basc(Title, Body, Empty_b, Php_basc, Cmb_b),
+	Attribute(Empty_a, Alt, Disable, Href, Id, Src, Style, Php_att, Attrs),
+	Elem(A, P, Div, Empty_e, Img, H, Php_ele, Elems),
+	Basc(Title, Body, Empty_b, Php_basc, Bascs),
 	Head(Head),
 	Root(Html),
 	make_Att,
@@ -42,7 +42,7 @@ data Attribute = Empty_a
 			   | Src In_att
 			   | Style In_att
 			   | Php_att Php_Function
-			   | Cmb_a Attribute Attribute 
+			   | Attrs [Attribute]
 			   deriving(Show, Read, Eq)
 data Elem = A Attribute String
 		  | P String
@@ -51,13 +51,13 @@ data Elem = A Attribute String
 		  | Img Attribute
 		  | H Level String
 		  | Php_ele Php_Function
-		  | Cmb_e Elem Elem
+		  | Elems [Elem]
 		  deriving(Show, Read, Eq)
 data Basc = Title String
 		  | Body String Elem
 		  | Empty_b
 		  | Php_basc Php_Function
-		  | Cmb_b Basc Basc
+		  | Bascs [Basc]
 		  deriving(Show, Read, Eq)
 data Head = Head String deriving(Show, Read, Eq)
 data Root = Html Head Basc deriving(Show, Read, Eq)
@@ -106,10 +106,22 @@ make_Level x = if x>6 then 6
 			   else x
 
 cmb_Att :: Attribute->Attribute->Attribute
-cmb_Att att_1 att_2 = Cmb_a att_1 att_2
+cmb_Att (Attrs att_1) (Attrs att_2 )= Attrs (att_1 ++ att_2)
+cmb_Att (Attrs att_1) x = Attrs (att_1 ++ [x])
+cmb_Att x (Attrs att_2) = Attrs (x : att_2)
+cmb_Att x_1 x_2 = Attrs [x_1,x_2]
 
 cmb_Elem :: Elem->Elem->Elem
-cmb_Elem x y = Cmb_e x y
+cmb_Elem (Elems att_1) (Elems att_2 )= Elems (att_1 ++ att_2)
+cmb_Elem (Elems att_1) x = Elems (att_1 ++ [x])
+cmb_Elem x (Elems att_2) = Elems (x : att_2)
+cmb_Elem x_1 x_2 = Elems [x_1,x_2]
+
+cmb_Basc :: Basc->Basc->Basc
+cmb_Basc (Bascs att_1) (Bascs att_2 )= Bascs (att_1 ++ att_2)
+cmb_Basc (Bascs att_1) x = Bascs (att_1 ++ [x])
+cmb_Basc x (Bascs att_2) = Bascs (x : att_2)
+cmb_Basc x_1 x_2 = Bascs [x_1,x_2]
 
 div_Elem :: Attribute->Elem->Elem->Elem
 div_Elem x y z = Div x y z
@@ -121,14 +133,13 @@ add_Basc :: Head->Basc->Root
 add_Basc h b = Html h b
 
 add_php_att :: Attribute->Attribute->Attribute
-add_php_att att_1 (Php_att php) = Cmb_a att_1 (Php_att php)
+add_php_att att_1 (Php_att php) = cmb_Att att_1 (Php_att php)
 
 add_php_ele :: Elem->Elem->Elem
-add_php_ele ele_1 (Php_ele php) = Cmb_e ele_1 (Php_ele php)
+add_php_ele ele_1 (Php_ele php) = cmb_Elem ele_1 (Php_ele php)
 
 add_php_basc :: Basc->Basc->Basc
-add_php_basc basc_1 (Php_basc php) = Cmb_b basc_1 (Php_basc php)
-
+add_php_basc basc_1 (Php_basc php) = cmb_Basc basc_1 (Php_basc php)
 
 
 

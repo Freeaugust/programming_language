@@ -1,6 +1,8 @@
 import Moduling
 import Php_moduling
 import Show
+import System.IO     
+import Data.Char  
 
 --test data
 x = P_Float 10
@@ -123,4 +125,6 @@ main = do
 	putStr (eval_r root_8)
 	putStr (eval_r root_9)
 	putStr (eval_r root_10)
+	writeFile "test.html" (eval_r root_1)
+
 
